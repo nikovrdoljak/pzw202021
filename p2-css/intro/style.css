@@ -1,0 +1,31 @@
+h1 {
+  color: red;
+}
+
+p{
+  color: green;
+}
+
+ul {
+    /* želim da budu brojevi */
+  list-style-type: decimal;
+}
+
+.klasa {
+  color: orange;
+  font-weight: bold;
+}
+
+em {
+  color: pink;
+}
+
+a:link {
+  color: pink;
+}
+a:visited {
+  color: purple;
+}
+a:hover {
+  text-decoration: none;
+}
