@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>A simple grid-based responsive design</title>
+  <style>
+    body {
+      font: 1.2em Helvetica, Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+      background-color: #eee;
+    }
+
+    .wrapper {
+      max-width: 960px;
+      margin: 2em auto;
+    }
+
+    .col1,
+    .col2 {
+      background-color: #fff;
+    }
+
+    @media screen and (min-width: 600px) {
+      .wrapper {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        column-gap: 5%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <div class="col1">
+      <p>Ovo oblikovanje je responsivno. Provjerite što se dešava kad preglednik sužavate i proširujete.</p>
+    </div>
+    <div class="col2">
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo maiores a repudiandae iusto ea doloribus
+        aperiam sunt cumque tempora quaerat natus officiis iste voluptates repellendus nesciunt necessitatibus harum,
+        quod obcaecati velit neque sed et quas! Blanditiis architecto dignissimos aut hic consequuntur sint,
+        perspiciatis natus modi iste amet porro harum atque ex molestias rerum beatae, laborum nulla. Saepe quis porro
+        iure ratione ab laborum est quae itaque reprehenderit omnis unde quaerat accusantium pariatur, deleniti
+        explicabo velit maxime eos possimus blanditiis minus repudiandae reiciendis voluptas laboriosam natus! Vitae
+        repellat fugiat ratione, architecto eaque natus tempora omnis, assumenda corporis quisquam ad placeat
+        distinctio.</p>
+    </div>
+
+  </div>
+</body>
+
+</html>

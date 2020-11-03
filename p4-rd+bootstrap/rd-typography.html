@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Demonstration of responsive typography</title>
+    <style>
+        html {
+            font-size: 1em;
+        }
+
+        body {
+            font: 1.2em Helvetica, Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #eee;
+        }
+
+        .wrapper {
+            max-width: 960px;
+            margin: 2em auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .col1,
+        .col2 {
+            background-color: #fff;
+        }
+
+        @media screen and (min-width: 600px) {
+            .wrapper {
+                display: grid;
+                grid-template-columns: 1fr 2fr;
+                column-gap: 5%;
+            }
+
+            h1 {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <div class="col1">
+            <h1>Pratite moju veličinu!</h1>
+            <p>Ovo oblikovanje je responsivno. Provjerite što se dešava s naslovom kad preglednik sužavate i proširujete.</p>
+        </div>
+        <div class="col2">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit velit saepe optio temporibus? Itaque
+                voluptatum impedit exercitationem cumque mollitia necessitatibus obcaecati, corporis harum odio autem
+                dolorum aliquid ut nisi iusto vitae nesciunt magni. Eos, veritatis aliquam corporis maxime assumenda
+                dolore, qui, dicta tenetur cum iste fuga accusantium ipsum sit placeat fugit vitae id omnis deleniti
+                nulla laborum perferendis! Quibusdam tempora, saepe vitae in repellendus ducimus, eos cumque dicta
+                tempore aperiam veritatis. Quisquam explicabo minus harum quia, tempore pariatur sed quo quod earum
+                molestiae ea qui non error eaque tenetur eos quis vero nisi rem asperiores aspernatur vel quaerat iusto
+                ipsa.</p>
+        </div>
+
+    </div>
+</body>
+
+</html>

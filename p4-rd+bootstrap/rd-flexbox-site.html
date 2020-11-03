@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>A simple flexbox-based responsive design</title>
+    <style>
+        body {
+            font: 1.2em Helvetica, Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #eee;
+        }
+
+        .wrapper {
+            max-width: 960px;
+            margin: 2em auto;
+        }
+
+        .col1,
+        .col2 {
+            background-color: #fff;
+        }
+
+        @media screen and (min-width: 600px) {
+            .wrapper {
+                display: flex;
+            }
+
+            .col1 {
+                flex: 1;
+                margin-right: 5%;
+            }
+
+            .col2 {
+                flex: 2;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <div class="col1">
+            <p>Ovo oblikovanje je responsivno. Provjerite što se dešava kad preglednik sužavate i proširujete.</p>
+        </div>
+        <div class="col2">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Non ab corporis error atque quo cumque nulla qui
+            et, molestiae explicabo, provident sed odio laudantium harum quas. Rerum quam eum ullam sapiente excepturi
+            similique, harum nisi voluptas ratione reiciendis. Assumenda et porro inventore! Expedita, fugit provident!
+            Impedit itaque velit aliquam provident? Error est sapiente dolorem, nemo laborum illum tempore fugiat.
+            Reprehenderit architecto corrupti atque cumque illum eius aspernatur repudiandae soluta mollitia, voluptate
+            fugiat molestiae molestias! Totam unde nobis dolorum illo provident, autem quisquam placeat nihil. Optio,
+            atque magni similique voluptates beatae quam voluptate consequuntur asperiores aliquam est at molestiae
+            accusantium? Tenetur!
+        </div>
+
+    </div>
+</body>
+
+</html>
