@@ -22,7 +22,7 @@ _održano 06.11.2020_
     * [Vježba 2 - Bootstrap Starter Template (20 min)](./vjezba2/) 🧪
     * [Bootstrap Build](https://bootstrap.build/){:target="_blank"} 🔗
     * [Free themes for Bootstrap](https://bootswatch.com/){:target="_blank"} 🔗
-    * [Bootstrap Tutorial](https://www.w3schools.com/bootstrap4/default.asp) 🔗{:target="_blank"}
+    * [Bootstrap Tutorial](https://www.w3schools.com/bootstrap4/default.asp){:target="_blank"} 🔗
 * [Projektni zadatak](./projektnizadatak/) 🧭
 
 
