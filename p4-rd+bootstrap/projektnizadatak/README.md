@@ -29,7 +29,7 @@ Izraditi web sjedište (site) za neku proizvoljnu temu ili klijenta, te ga objav
 ## Pomoćni elementi
 
 ### Zaglavlje s navigacijskom trakom
-* Koristiti ```<nav>``` tag, a iz [Bootstrap primjera](https://getbootstrap.com/docs/4.5/examples/) (Navbar) se može vidjeti kako ih 
+* Koristiti ```<nav>``` tag, a iz [Bootstrap primjera](https://getbootstrap.com/docs/4.5/examples/){:target="_blank"} (Navbar) se može vidjeti kako ih 
 implementirati.
 
 ## Primjeri sekcija
