@@ -5,3 +5,6 @@
 
 ## [Predavanje 4 - Responsive Design, Bootstrap, Projektni zadatak 1](./p2-css/) 
 > _održano 11.06.2020_
+
+
+@nikovrdoljak

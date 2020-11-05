@@ -1,4 +1,4 @@
-# Media queries i responsivni dizajn - vježba
+# Vježba 1 - Media queries i responsivni dizajn
 
 U ovoj jednostavnoj vježbi responsivnog dizajna ćete proći nekoliko koraka:
 1. Stvoriti osnovnu HTML datoteku s par CSS pravila kojima bojamo različite dijelove stranice.
