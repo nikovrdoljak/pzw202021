@@ -1,7 +1,6 @@
 # Projektni zadatak
 
 ## Opis
-
 Izraditi web sjedište (site) za neku proizvoljnu temu ili klijenta, te ga objaviti. Projekt mora zadovoljiti slijedeće uvjete:
 * Izvorni kod mora biti objavljen na GitHub-u
 * GitHub projekt mora imati „markup” opis projekta
@@ -11,6 +10,13 @@ Izraditi web sjedište (site) za neku proizvoljnu temu ili klijenta, te ga objav
 * Web mora biti responsivan
 * Poželjno da naslovna stranica bude „one-page” stranica (sav bitan sadržaj na njoj)
 * Obavezno imati još dvije dodatne stranice: „O meni” + neka od: kontakt, FAQ, Izjava o privatnosti, Izjava o kolačićima i sl.
+
+## GitHub Classroom kolaboracija
+Svaki student će preko GitHub classroom platforme dobiti prisup projektnom zadatku kao već pripremljenom repozitoriju, te na njemu odraditi zadatak, te po završtku ga objaviti (_push_) i kreirati _pull request_ za ocjenjivanje.
+* Pozivni link se nalazi na web adresi: [https://classroom.github.com/a/oJT36AHo](https://classroom.github.com/a/oJT36AHo){:target="_blank"}
+* Prijavite se sa svojim GitHub računom, odaberite svoje ime, prihvatite pozivnicu (_accept your invitation_), te pristupite svom zadatku (_access your assignment_).
+* Svoj GitHub repozitorij sa zadatkom klonirajte na svom računalu, te ste nakon toga spremni za rad.
+* Ako imate bilo kakvih problema u prostupu svom zadatku javite se predavaču.
 
 ## Predaja projekta
 * Po završetku projekta poslati na mail adrese sbuljat@unizd.hr i nvrdoljak@unizd.hr s linkovima na GitHub stranicu projekta i GitHup Pages stranicu rada. 
