@@ -19,7 +19,8 @@ Svaki student će preko GitHub classroom platforme dobiti prisup projektnom zada
 * Ako imate bilo kakvih problema u prostupu svom zadatku javite se predavaču.
 
 ## Predaja projekta
-* Po završetku projekta poslati na mail adrese sbuljat@unizd.hr i nvrdoljak@unizd.hr s linkovima na GitHub stranicu projekta i GitHup Pages stranicu rada. 
+* Po završetku projekta napraviti Pull Request s porukom da ste projekt završili, te također pošaljite i poruku na mail adrese sbuljat@unizd.hr i nvrdoljak@unizd.hr s linkovima na GitHub stranicu projekta i GitHub Pages stranicu rada. 
+* Ukoliko smatramo da je potrebno neke stvari prepraviti u zadatsku kreirat ćemo tzv. _issue_ na vađem repozitoriju s opisom tražene korekcije, te takve zahtjeve trebate popraviti ili dopuniti. Po završetku zatvorite _issue_, te napravite novi _pull request_.
 * Ocjena rada utjecat će od 5-15 % na vašu završnu ocjenu.
 
 ## Moguće teme
