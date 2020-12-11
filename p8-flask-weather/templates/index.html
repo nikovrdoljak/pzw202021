@@ -1,20 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask vrijeme</title>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-    {{ bootstrap.load_css() }}
-</head>
-<body>
-    <div class="container">
-        <h1>Vremenska prognoza</h1>
-        <h2>Vrijeme u gradu: {{weather.name}}</h3>
-        <h3>{{weather.weather[0].description}}</h3>
-        <h3>Temperatura: {{weather.main.temp}} C˙</h3>
-        <h3>Vlažnost zraka: {{weather.main.humidity}}%</h3>
-        <h3>Tlak: {{weather.main.pressure}} hpa</h3>
+{% extends 'base.html' %}
+{% block body %}
+<h1>Vrijeme i vremenska prognoza</h1>
+<h3>{{weather.dt | datetime}}</p>
+</h3>
+<div class="card" style="width: 24rem;">
+    <h4 class="card-header">
+        {{weather.name}}
+    </h4>
+    <div class="card-body">
+        <h5 class="card-title"><img src="http://openweathermap.org/img/wn/{{weather.weather[0].icon}}@2x.png">{{weather.weather[0].description}}</h5>
+        <div class="card-text">
+            <p>Temperatura: {{weather.main.temp}} C˙</p>
+            <p>Vlažnost zraka: {{weather.main.humidity}}%</p>
+            <p>Tlak: {{weather.main.pressure}} hpa</p>
+            <p>Izlazak sunca: {{weather.sys.sunrise | datetime('time')}}</p>
+            <p>Zalazak sunca: {{weather.sys.sunset | datetime('time')}}</p>
+        </div>
+        <a href="{{ url_for('forecast_days') }}" class="btn btn-primary">Prognoza za slijedećih 7 dana</a>
     </div>
-</body>
-</html>
+</div>
+<pre>Cached on:{{now}}</pre>
+
+{% endblock %}
