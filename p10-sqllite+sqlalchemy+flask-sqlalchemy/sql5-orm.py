@@ -58,6 +58,6 @@ session.add_all([
 session.commit()
 
 # Dohvati Matu, pa onda njegove adrese
-marcos = session.query(Employee).filter(Employee.Name.like(r"%Mate%")).first()
-for address in marcos.Addresses:
+mate = session.query(Employee).filter(Employee.Name.like(r"%Mate%")).first()
+for address in mate.Addresses:
     print ('Address:', address)
