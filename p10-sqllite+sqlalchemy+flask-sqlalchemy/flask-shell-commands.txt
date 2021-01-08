@@ -1,0 +1,47 @@
+(venv) flask shell
+>>>  from flasksql1 import db
+>>>  db.create_all()
+>>>  from flasksql1 import Role, User
+>>>  admin_role = Role(name='Admin')
+>>> user_ive = User(username='ive', role=admin_role)
+>>> print(admin_role)
+<Role 'Admin'>
+>>> db.session.add(admin_role)
+>>> db.session.add_all([user_ive])
+>>> db.session.commit()
+>>> print(admin_role.id)
+1
+>>> Role.query.all()
+[<Role 'Admin'>, <Role 'Moderator'>, <Role 'User'>]
+>>> User.query.all()
+[<User 'ive'>, <User 'ivana'>, <User 'stipe'>]
+>>> User.query.filter_by(role=user_role).all()
+[<User 'ivana'>, <User 'stipe'>]
+>>> str(User.query)
+'SELECT users.id AS users_id, users.username AS users_username, users.role_id AS users_role_id \nFROM users'
+>>> Role.query.first()
+<Role 'Admin'>
+>>> user_role
+>>> Role.query.first()
+<Role 'Admin'>
+>>> user_role
+<Role 'User'>
+>>> user_role.users
+[<User 'ivana'>, <User 'stipe'>]
+>>> user_role.users[0]
+<User 'ivana'>
+>>> user_role.users[0].role
+<Role 'User'>
+
+
+# Update
+>>> admin_role.name = 'Administrator'
+>>> print(admin_role)
+<Role 'Administrator'>
+>>> db.session.add(admin_role)
+>>> db.session.commit()
+
+
+# Delete
+>>> db.session.delete(mod_role)
+>>> db.session.commit()
