@@ -274,6 +274,8 @@ True
 ### Zadatak 8 - dodavanje password polja
 Promijenimo User klasu da možemo dodati polje za spremanje hash-a zaporke. Nova klasa bi trebala izgledati ovako:
 ```python
+from werkzeug.security import generate_password_hash, check_password_hash
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -436,7 +438,7 @@ Te još jednu rutu, kojoj smije pristupiti samo autenticirani korisnik:
 @app.route('/secret')
 @login_required
 def secret():
-    return "Ovu stranicu može vidjeti samo prijavljeni korisnil..."
+    return "Ovu stranicu može vidjeti samo prijavljeni korisnik..."
 ```
 
 ### Zadatak 10 - odjava
@@ -461,8 +463,10 @@ def logout():
 ```
 
 ### Zadatak 11 - registracija
-Sad ćemo dodati funkcionalnost registracije. Dodajmo rutu:
+Sad ćemo dodati funkcionalnost registracije. Dodajmo rutu i klasu forme:
 ```python
+from wtforms.validators import EqualTo
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -473,6 +477,12 @@ def register():
         flash('Sad se možete prijaviti', category='success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
+
+class RegisterForm(FlaskForm):
+    email = TextField('E-mail', validators=[DataRequired(), Length(1, 64), Email()])
+    password = PasswordField('Zaporka', validators=[DataRequired(), EqualTo('password2', message='Zaporke moraju biti jednake.')])
+    password2 = PasswordField('Potvrdi zaporku', validators=[DataRequired()])
+    submit = SubmitField('Registracija')
 ```
 I dodajmo ```register.html``` predložak:
 ```html
@@ -502,7 +512,7 @@ if user is not None and user.verify_password(form.password.data):
 ```
 Registrirajmo novog korisnika, i prijavimo se s njim. Provjerimo kako u bazi izgleda novi zapis.
 
-### Zadatak 12 - potvrda regostracije
+### Zadatak 12 - potvrda registracije
 Ovdje ćemo samo pokazati kako bi trebao izgledati proces potvrde registracije. Naime jedan od obaveznih koraka pri registraciji je potvrda iste mailom, gdje korisnik mora kliknuti aktivacijski link.
 Taj link mora imati korsničko ime kriptirano, stoga moramo napraviti otprilike slijedeće:
 ```python
