@@ -185,7 +185,7 @@ def userdelete(id):
     flash('Korisnik uspješno pobrisan.')
     return redirect(url_for('users'))
 ```
-
+# Migracije
 ## Zadatak 6 - migracije
 * Instalirati flask-migrate:
 ```
@@ -221,3 +221,327 @@ flask db upgrade
 
 ## Domaći rad
 Napravite ažuriranje korisnika, brisanje s potvrdom, upravljanje rolama, dodavanje korisnika u rolu, dodajte novu tablicu i sl.
+
+
+# Autentikacija
+
+* Proces u kojem ustanovljavamo tko ili što jest ili se deklarira da je
+* Odvija se na način da uspoređujemo vjerodajnice (credentials) korisnika sa vjerodajnicama spremljenim u bazi autentikacijskog poslužitelja
+* Autentikacija je bitna jer omogućava da određenim resursima smiju pristupiti samo ovlašteni korisnici ili procesi 
+
+## Faktori autentikacije
+* **Faktor znanja** – ono što korisnik zna – zaporka, fraza, PIN, odgovor na pitanje
+* **Faktor vlasništva** – ono što korisnik ima – kartica, narukvica, telefon…
+* **Faktor pripadnosti** – ono što korisnik jest ili radi – otisak prsta, mrežnica, glas, lice, potpis…
+* **Faktor vremena**
+* **Faktor lokacije**
+
+Da bi se osoba pozitivno autenticirala, poželjno je da elementi barem dva faktora budu verificirani.
+
+## Tipovi autentikacije
+* Single-factor
+    * Provjera autentičnosti s jednim faktorom
+    * Najslabija i nepoželjna za transakcije koje traže visok nivo zaštite
+* Two-factor
+    * Bankomat – nešto što korisnik ima (kartica) i zna (PIN)
+    * Ili zaporka (znamo) + token (imamo; na uređaju)
+* Multi-factor
+
+## Autentikacija u flasku
+* Korisnički ime ili email + zaporka
+* Flask-login
+    * Ekstenzija za upravljanje sesijama prijavljenih korisnika
+    * ```pip install flask-login```
+* Forma za prijavu
+    * LoginForm
+    * ```pip install flask-wtf``` (imamo od ranije u projektu)
+
+## Zaštita zaporke
+Zaporka se nikad ne smije spremati u izvornom obliku, te se sprema njen *hash*.
+Hashing funkcija uzima zaporku kao ulazni argument, dodaje slučajnu sekvencu (*salt*) i primjenjuje jednosmjernu kriptografsku funkciju. Rezultat je sekvenca iz koje se ne može reverzno dobiti izvornu zaporku. Zatim uspoređujemo *hashiranu* zaporku koju je korisnik upisao s onom u bazi. Detaljnije o ovoj temi možete pronaći na linku: [Salted Password Hashing - Doing it Right](https://crackstation.net/hashing-security.htm)
+
+### Zadatak 7
+```python
+flask shell
+>>> from werkzeug.security import generate_password_hash, check_password_hash
+>>> hash1 = generate_password_hash('123')
+>>> print(hash1)
+pbkdf2:sha256:50000$ClVWrTj0$d9ef0819c7bcd9ac996079d284f87f4969f3ba09e504c58a839a169ef10c7193
+>>> check_password_hash(hash1, '123')
+True
+```
+
+### Zadatak 8
+Promijenimo User klasu da možemo dodati polje za spremanje hash-a zaporke. Nova klasa bi trebala izgledati ovako:
+```python
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    email = db.Column(db.String(64), unique=True)
+    password_hash = db.Column(db.String(128))
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+    
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+    
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
+    
+    def __repr__(self):
+        return '<User %r>' % self.username
+```
+
+Kreiramo skriptu i ažurirajmo novu bazu:
+```
+flask db migrate -m "added password"
+flask db upgrade
+```
+Provjerimo kako to radi u _shellu_:
+```python
+flask shell
+>>> from app import User
+>>> u = User()
+>>> u.password = '123'
+>>> u.password
+AttributeError: password is not a readable attribute
+>>> u.password_hash
+'pbkdf2:sha256:150000$4uay7o1E$1efe76f431c67bd69571a94e777b2a4931d138171fad305247e78114d2a735d8'
+>>> u.verify_password('123')
+True
+```
+
+### Zadatak 8
+Dodat ćemo sad formu za logiranje te pripadnu programsku logiku uz pomoć [flask-login](https://flask-login.readthedocs.io/en/latest/) ekstenzije. Dodajmo najprije klasu za *login* formu u ```app.py```:
+```python
+class LoginForm(FlaskForm):
+    email = TextField('E-mail', validators=[DataRequired(), Length(1, 64), Email()])
+    password = PasswordField('Zaporka', validators=[DataRequired()])
+    remember_me = BooleanField('Ostani prijavljen')
+    submit = SubmitField('Prijava')
+```
+te uvezimo dodatne potrebne module:
+```python
+from wtforms import TextField, PasswordField, BooleanField
+from wtforms.validators import Length, Email
+```
+Email validator je potrebno zasebno instalirati:
+```
+pip install email-validator
+```
+Dodajmo rutu:
+```python
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    return render_template('login.html', form=form)
+```
+i predložak ```login.html```
+```html
+{% extends "layout.html" %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}Prijava - {% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>Prijava</h1>
+    </div>
+    <div class="col-md-4 mb-4">
+        {{ render_form(form) }}
+    </div>
+{% endblock %}
+```
+U ```layout.html``` dodajmo link za prijavu (možemo maknuti polje za pretragu):
+```html
+    <ul class="nav navbar-nav navbar-right">
+        <li><a class="nav-link" href="{{url_for('login')}}">Prijava</a></li>
+    </ul>
+```
+Da bismo mogli jednostavnije raditi s prijavom, koristit ćemo [flask-login](https://flask-login.readthedocs.io/en/latest/) ekstenziju. Instalirajmo je:
+```
+pip install flask-login
+```
+Flask-login ekstenzija s brine o prijavi, odjavi i pamćenju korisnikove sesije tijekom vremena. Ona radi slijedeće:
+* Pamti korisnički ID u sesiji i brine se o prijavi i odjavi
+* Omogućava da označite koje *view-ove* može samo prijavljeni korisnik vidjeti
+* Brine o implementaciji *"zapamti me"* funkcionalnosti
+* Omogućava da netko ne može *ukrasti* korisničku sesiju
+* Lako se integrira s drugim ekstenzijama poput *flask-principal* za autorizaciju
+
+Ono što moramo sami napraviti je:
+* Pobrinuti se gdje ćemo spremati podatke (u bazu npr.)
+* Odlučiti koju metodu autentikacije ćemo koristiti (korisnik/zaporka, OpenID, i sl.)
+* Brinuti o načinu registracije, obnovi zaporke i sl.
+
+Dodajmo potrebne module:
+```python
+from flask_login import UserMixin
+from flask_login import LoginManager, login_required, current_user, login_user, logout_user
+```
+Konfigurirajmo aplikaciju da koristi flask-login:
+```python
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+```
+I promijenimo ```User``` klasu da naslijeđuje i tzv. ```UserMixin``` klasu:
+```python
+class User(UserMixin, db.Model):
+```
+
+Dodajmo login rutu (za sad nećemo provjeravati zaporku):
+```python
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is not None:
+            login_user(user, form.remember_me.data)
+            next = request.args.get('next')
+            if next is None or not next.startswith('/'):
+                next = url_for('index')
+            flash('Uspješno ste se prijavili!', category='success')
+            return redirect(next)
+        flash('Neispravno korisničko ime ili zaporka!', category='warning')
+    return render_template('login.html', form=form)
+```
+Dodajmo i 
+```python
+from flask import request
+```
+Te na kraju dodajmo u ```index.html```:
+```html
+<div class="mt-4">
+    <h4>current_user:</h4>
+    <p>username: <b>{{current_user.username}}</b></p>
+    <p>is_authenticated: <b>{{current_user.is_authenticated}}</b></p>
+    <p>is_active: <b>{{current_user.is_active}}</b></p>
+    <p>is_anonymous: <b>{{current_user.is_anonymous}}</b></p>
+    <p>get_id(): <b>{{current_user.get_id()}}</b></p>
+</div>
+```
+Te još jednu rutu, kojoj smije pristupiti samo autenticirani korisnik:
+```python
+@app.route('/secret')
+@login_required
+def secret():
+    return "Ovu stranicu može vidjeti samo prijavljeni korisnil..."
+```
+
+### Zadatak 9
+Dodajmo sad i fukcionalnost odjave. Promijenimo u ```layout.html``` link za prijavu:
+```html
+    <ul class="nav navbar-nav navbar-right">
+        {% if current_user.is_authenticated %}
+        <li><a href="{{url_for('logout')}}">Odjava</a></li>
+        {% else %}
+        <li><a href="{{url_for('login')}}">Prijava</a></li>
+        {% endif %}
+    </ul>
+```
+Dodajmo rutu za odjavu:
+```python
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Odjavili ste se.', category='success')
+    return redirect(url_for('index'))
+```
+
+### Zadatak 10
+Sad ćemo dodati funkcionalnost registracije. Dodajmo rutu:
+```python
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        user = User(email=form.email.data, username=form.email.data, password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Sad se možete prijaviti', category='success')
+        return redirect(url_for('login'))
+    return render_template('register.html', form=form)
+```
+I dodajmo ```register.html``` predložak:
+```html
+{% extends "layout.html" %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}Registracija - {% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>Registracija</h1>
+    </div>
+    <div class="col-md-4">
+        {{ render_form(form) }}
+    </div>
+{% endblock %}
+```
+U ```login.html``` dodajmo gumb za registraciju ispod forme za prijavu:
+```html
+<div class="col-md-12" class="mt-4">
+        Novi korisnik?<br> <a href="{{url_for('register')}}" class="btn btn-warning">Registrirajte se</a>
+    </div>
+```
+Također u ```login``` ruti dodajmo da provjeravamo i valjanost zaporke:
+```python
+if user is not None and user.verify_password(form.password.data):
+```
+Registrirajmo novog korisnika, i prijavimo se s njim. Provjerimo kako u bazi izgleda novi zapis.
+
+### Zadatak 11
+Ovdje ćemo samo pokazati kako bi trebao izgledati proces potvrde registracije. Naime jedan od obaveznih koraka pri registraciji je potvrda iste mailom, gdje korisnik mora kliknuti aktivacijski link.
+Taj link mora imati korsničko ime kriptirano, stoga moramo napraviti otprilike slijedeće:
+```python
+flask shell
+>>> from itsdangerous import TimedJSONWebSignatureSerializer as serializer
+>>> s = serializer(app.config['SECRET_KEY'], expires_in=3600)
+>>> token = s.dumps({ 'potvrdi': 'nvrdoljak@unizd.hr' })
+>>> token
+b'eyJhbGciOiJIUzUxMiIsImlhdCI6MTU0MzkyMTE4NiwiZXhwIjoxNTQzOTI0Nzg2fQ.eyJwb3R2cmRpIjoibWFyaW9AdW5pemQuaHIifQ.tFRcBO0gjDzDcD4AL0eRx453ULdaq07MKWE6y-Nt8MnL3tesH7_VbFIFlcZSE2AxB1EdC3jbRdxSQ3o4JwDX_w'
+>>> data = s.loads(token)
+>>> data
+{'potvrdi': 'nvrdoljak@unizd.hr'}
+```
+Sadržaj emaila može biti npr. ovakav:
+```python
+Poštovani {{ user.username }},
+Da biste potvrdili svoju prijavu, molimo kliknite na slijedeći link:
+{{ url_for('confirm', token=token, _external=True) }}
+Srdačan pozdrav!
+```
+A pripadna ruta bi izgledala ovako:
+```python
+@app.route('/confirm/<token>')
+@login_required
+def confirm(token):
+    if current_user.confirmed:
+        return redirect(url_for('index'))
+    if current_user.confirm(token):
+        db.session.commit()
+        flash('Vaša prijava je potvrđena! Hvala.')
+    else:
+        flash('Link za potvrdu je neispravan ili je istekao.')
+    return redirect(url_for('index'))
+```
+
+## Ostali scenariji
+* Promjena passworda
+* Resetiranje passworda
+* Promjena email adrese
+
+## Slijedeće
+Autorizacija i korištenje ```flask-principal``` ekstenzije.
