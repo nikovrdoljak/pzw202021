@@ -17,5 +17,5 @@ Popis predavanja:
 ### [Predavanje 10 - SQLite, SQLAlchemy, flask-sqlalchemy](./p10-sqllite+sqlalchemy+flask-sqlalchemy/) 
 > _održano 08.01.2021_
 
-### [Predavanje 12 - flask-sqlalchemy i migracije](./p12-flask-sqlalchemy+migracije/) 
+### [Predavanje 12 - flask-sqlalchemy, migracije i autentikacija (flask-login)](./p12-flask-sqlalchemy+migracije/) 
 > _održano 22.01.2021_

@@ -1,4 +1,4 @@
-# Predavanje 12: FlaskSQLAlchemy + Migracije
+# Predavanje 12: FlaskSQLAlchemy, Migracije, Autentikacija (flask-login)
 Predavanje se nastavlja na predavanje 10 (u kojem smo se upoznali s SQLite bazom podataka i SQLAlchemy ekstenzijom), a pokazat ćemo kako povezati Flask view funkcije i forme s bazom podataka uz pomoć [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/) ekstenzije. U bazu podataka ćmo spremati korisnike, pregledavati ih, mijenjati i brisati.
 
 U drugom dijelu predavanja pokazat ćemo rad s migracijskim skriptama za rad s bazom podataka. Koristit ćemo [Flask-Migrate](https://flask-migrate.readthedocs.io/) ekstenziju.
@@ -110,7 +110,7 @@ def users():
     return render_template('users.html', users=users)
 ```
 * Dodati u users.html predložak:
-```html
+```
 {% extends "layout.html" %}
 {% block title %}Korisnici - {% endblock %}
 {% block page_content %}
@@ -139,7 +139,7 @@ def user(id):
     return render_template('user.html', user=user)
 ```
 * Dodati u user.html predložak:
-```html
+```
 {% extends "layout.html" %}
 {% block title %}Korisnik | {{ user.username }} - {% endblock %}
 {% block page_content %}
@@ -160,7 +160,7 @@ def page_not_found(e):
 ```
 
 * predložak _error404.html_:
-```html
+```
 {% extends "layout.html" %}
 {% block title %}Nepostojeći sadržaj - {% endblock %}
 {% block page_content %}
@@ -342,7 +342,7 @@ def login():
     return render_template('login.html', form=form)
 ```
 i predložak ```login.html```
-```html
+```
 {% extends "layout.html" %}
 {% from 'bootstrap/form.html' import render_form %}
 
@@ -475,7 +475,7 @@ def register():
     return render_template('register.html', form=form)
 ```
 I dodajmo ```register.html``` predložak:
-```html
+```
 {% extends "layout.html" %}
 {% from 'bootstrap/form.html' import render_form %}
 
