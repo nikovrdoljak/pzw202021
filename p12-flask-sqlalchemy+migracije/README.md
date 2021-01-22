@@ -110,7 +110,7 @@ def users():
     return render_template('users.html', users=users)
 ```
 * Dodati u users.html predložak:
-```
+```html
 {% extends "layout.html" %}
 {% block title %}Korisnici - {% endblock %}
 {% block page_content %}
@@ -139,7 +139,7 @@ def user(id):
     return render_template('user.html', user=user)
 ```
 * Dodati u user.html predložak:
-```
+```html
 {% extends "layout.html" %}
 {% block title %}Korisnik | {{ user.username }} - {% endblock %}
 {% block page_content %}
@@ -160,7 +160,7 @@ def page_not_found(e):
 ```
 
 * predložak _error404.html_:
-```
+```html
 {% extends "layout.html" %}
 {% block title %}Nepostojeći sadržaj - {% endblock %}
 {% block page_content %}
@@ -342,7 +342,7 @@ def login():
     return render_template('login.html', form=form)
 ```
 i predložak ```login.html```
-```
+```html
 {% extends "layout.html" %}
 {% from 'bootstrap/form.html' import render_form %}
 
@@ -475,7 +475,7 @@ def register():
     return render_template('register.html', form=form)
 ```
 I dodajmo ```register.html``` predložak:
-```
+```html
 {% extends "layout.html" %}
 {% from 'bootstrap/form.html' import render_form %}
 
