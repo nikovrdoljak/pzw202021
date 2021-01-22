@@ -260,7 +260,7 @@ Da bi se osoba pozitivno autenticirala, poželjno je da elementi barem dva fakto
 Zaporka se nikad ne smije spremati u izvornom obliku, te se sprema njen *hash*.
 Hashing funkcija uzima zaporku kao ulazni argument, dodaje slučajnu sekvencu (*salt*) i primjenjuje jednosmjernu kriptografsku funkciju. Rezultat je sekvenca iz koje se ne može reverzno dobiti izvornu zaporku. Zatim uspoređujemo *hashiranu* zaporku koju je korisnik upisao s onom u bazi. Detaljnije o ovoj temi možete pronaći na linku: [Salted Password Hashing - Doing it Right](https://crackstation.net/hashing-security.htm)
 
-### Zadatak 7
+### Zadatak 7 - generiranje i provjera hash-a
 ```python
 flask shell
 >>> from werkzeug.security import generate_password_hash, check_password_hash
@@ -271,7 +271,7 @@ pbkdf2:sha256:50000$ClVWrTj0$d9ef0819c7bcd9ac996079d284f87f4969f3ba09e504c58a839
 True
 ```
 
-### Zadatak 8
+### Zadatak 8 - dodavanje password polja
 Promijenimo User klasu da možemo dodati polje za spremanje hash-a zaporke. Nova klasa bi trebala izgledati ovako:
 ```python
 class User(db.Model):
@@ -316,7 +316,7 @@ AttributeError: password is not a readable attribute
 True
 ```
 
-### Zadatak 8
+### Zadatak 9 - forma za prijavu
 Dodat ćemo sad formu za logiranje te pripadnu programsku logiku uz pomoć [flask-login](https://flask-login.readthedocs.io/en/latest/) ekstenzije. Dodajmo najprije klasu za *login* formu u ```app.py```:
 ```python
 class LoginForm(FlaskForm):
@@ -439,7 +439,7 @@ def secret():
     return "Ovu stranicu može vidjeti samo prijavljeni korisnil..."
 ```
 
-### Zadatak 9
+### Zadatak 10 - odjava
 Dodajmo sad i fukcionalnost odjave. Promijenimo u ```layout.html``` link za prijavu:
 ```html
     <ul class="nav navbar-nav navbar-right">
@@ -460,7 +460,7 @@ def logout():
     return redirect(url_for('index'))
 ```
 
-### Zadatak 10
+### Zadatak 11 - registracija
 Sad ćemo dodati funkcionalnost registracije. Dodajmo rutu:
 ```python
 @app.route('/register', methods=['GET', 'POST'])
@@ -502,7 +502,7 @@ if user is not None and user.verify_password(form.password.data):
 ```
 Registrirajmo novog korisnika, i prijavimo se s njim. Provjerimo kako u bazi izgleda novi zapis.
 
-### Zadatak 11
+### Zadatak 12 - potvrda regostracije
 Ovdje ćemo samo pokazati kako bi trebao izgledati proces potvrde registracije. Naime jedan od obaveznih koraka pri registraciji je potvrda iste mailom, gdje korisnik mora kliknuti aktivacijski link.
 Taj link mora imati korsničko ime kriptirano, stoga moramo napraviti otprilike slijedeće:
 ```python
