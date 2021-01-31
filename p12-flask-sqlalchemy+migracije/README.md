@@ -514,7 +514,7 @@ Registrirajmo novog korisnika, i prijavimo se s njim. Provjerimo kako u bazi izg
 
 ### Zadatak 12 - potvrda registracije
 Ovdje ćemo samo pokazati kako bi trebao izgledati proces potvrde registracije. Naime jedan od obaveznih koraka pri registraciji je potvrda iste mailom, gdje korisnik mora kliknuti aktivacijski link.
-Taj link mora imati korsničko ime kriptirano, stoga moramo napraviti otprilike slijedeće:
+Taj link mora imati korisničko ime kriptirano, stoga moramo napraviti otprilike slijedeće:
 ```python
 flask shell
 >>> from itsdangerous import TimedJSONWebSignatureSerializer as serializer
@@ -552,6 +552,70 @@ def confirm(token):
 * Promjena passworda
 * Resetiranje passworda
 * Promjena email adrese
+
+## Flask-admin
+[Flask-admin](https://flask-admin.readthedocs.io/en/latest/) ekstenzija pomaže nam da na jednostavan način dodamo u svoju Flask aplikaciju podršku za administriranje aplikacije te pregledavanje podataka u njoj kojima se pristupa preko postojećih _db_ klasa. Pogledajmo kako implementirati ```flask-admin``` ekstenziju. Najprije ju instalirajmo:
+```
+pip install flask-admin
+```
+U ```app.py``` dodajmo:
+```python
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+```
+te nakon instaciranja aplikacije dodajmo:
+```python
+admin = Admin(app)
+```
+Ispod definicija db klasa dodajmo:
+```python
+admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Role, db.session))
+```
+Pokrenimo aplikaciju te odimo na adresu [http://localhost:5000/admin/](http://localhost:5000/admin/). Izgled _admin_ stranice je slijedeći:
+![flask-admin-home](./static/images/flask-admin-1.png)
+Na ovoj stranici sad možemo pregledavati podatke u tablicama _user_ i _role_, uređivati ih brisati, odnosno vršiti sve _CRUD (Create, Read, Update, Delete)_ funkcije nad podacima.
+
+Ako želimo da ova  _admin_ sekcija aplikacije bude u skladu s našim layoutom, možemo uključiti _bootsrap4_ i _bootswatch_ temu koju koristimo, izmijenimo dio koda:
+```python
+app.config['FLASK_ADMIN_SWATCH'] = 'minty'
+admin = Admin(app, template_mode='bootstrap4')
+```
+Stranica je sad malo izmijenjena:
+![flask-admin-home](./static/images/flask-admin-2.png)
+
+Primijetili ste da je početna stranica _admin_ sekcije prazna. Nju možete lako promijeniti, tj. dodati je na način da u _templates_ mapi stvorite mapu _admin_ te datoteku ```index.html``` sa npr. slijedećim sadržajem:
+```html
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <p>Administracija aplikacije</p>
+{% endblock %}
+```
+
+Također, primijetit ćete da _admin_ sekciji možemo pristupiti i ako nismo prijavljeni (logirani). To je scenarij koji želimo spriječiti, pa ćemo to riješiti na jednostavan način, pošto smo već implementirali _flask-login_ autentikaciju. Stvorit ćemo svoju ```ModelView``` klasu koju naslijeđuje postojeću, te nadjačati (_override_) njenu ```is_accessible()``` metodu:
+```python
+class MyModelView(ModelView):
+    def is_accessible(self):
+        return current_user.is_authenticated
+```
+Promijenimo način dodavanja _db_ klasa korištenjem nove klase:
+```python
+admin.add_view(MyModelView(User, db.session))
+admin.add_view(MyModelView(Role, db.session))
+```
+Ako sad pristupite _admin_ sekciji primjetit ćete da linkova na _user_ i _role_ stranica više nema, te da će se pojaviti tek kad se prijavite (logirate) na glavnoj stranici.
+
+```flask-admin``` ekstenzija vam zbilja olakšava razvoj web aplikacije, a omogućava i da ju dodatno prilagodite vašim zahtjevima. Npr. možete:
+* dodatno prilagoditi pristup pojedinim elementima administracije
+* promijeniti CRUD značajke pojedine stranice korištenjem metoda ```can_view_details, can_create, can_edit, can_delete```. 
+* definirati koje atribute želite prikazati ili ne.
+* grupirati stranice 
+* dodati vlastite _poglede_
+* izmijeniti postojeće predloške
+* lokalizirate na neki drugi jezik i sl.
+Detaljnije informacije možete pronaći u [Flask-admin dokumentaciji](https://flask-admin.readthedocs.io/en/latest/).
+
 
 ## Slijedeće
 Autorizacija i korištenje ```flask-principal``` ekstenzije.
