@@ -110,6 +110,7 @@ def users():
     return render_template('users.html', users=users)
 ```
 * Dodati u users.html predložak:
+
 {% raw %}
 ```html
 {% extends "layout.html" %}
@@ -142,6 +143,7 @@ def user(id):
     return render_template('user.html', user=user)
 ```
 * Dodati u user.html predložak:
+
 {% raw %}
 ```html
 {% extends "layout.html" %}
@@ -153,6 +155,7 @@ def user(id):
 {% endblock %}
 ```
 {% endraw %}
+
 * Pokrenite aplikaciju i provjerite da se na klik korisnika otvara stranica s podacima o korisniku. Probajte u pregledniku direktno promijeniti _id_ parametar u neki drugi. Što se dešava ako upišete nepostojeći _id_?
 
 ## Zadatak 4 – dodati stranicu za grešku 404
@@ -165,6 +168,7 @@ def page_not_found(e):
 ```
 
 * predložak _error404.html_:
+
 {% raw %}
 ```html
 {% extends "layout.html" %}
@@ -351,6 +355,7 @@ def login():
     return render_template('login.html', form=form)
 ```
 i predložak ```login.html```
+
 {% raw %}
 ```html
 {% extends "layout.html" %}
@@ -495,6 +500,7 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Registracija')
 ```
 I dodajmo ```register.html``` predložak:
+
 {% raw %}
 ```html
 {% extends "layout.html" %}
@@ -598,6 +604,7 @@ Stranica je sad malo izmijenjena:
 ![flask-admin-home](./static/images/flask-admin-2.png)
 
 Primijetili ste da je početna stranica _admin_ sekcije prazna. Nju možete lako promijeniti, tj. dodati je na način da u _templates_ mapi stvorite mapu _admin_ te datoteku ```index.html``` sa npr. slijedećim sadržajem:
+
 {% raw %}
 ```html
 {% extends 'admin/master.html' %}
