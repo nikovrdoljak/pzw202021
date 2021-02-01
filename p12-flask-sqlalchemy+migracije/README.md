@@ -110,7 +110,7 @@ def users():
     return render_template('users.html', users=users)
 ```
 * Dodati u users.html predložak:
-```html
+```jinja
 {% extends "layout.html" %}
 {% block title %}Korisnici - {% endblock %}
 {% block page_content %}
@@ -128,7 +128,7 @@ def users():
 ```
 * Pokrenite aplikaciju i pogledajte da li su svi korisnici ispisani.
 * Promijenite liniju s ispisom korisnika u link:
-```html
+```jinja
 <li><a href="{{ url_for('user', id=user.id )}}">{{ user.username }}</a></li>
 ```
 * Dodati user view:
@@ -139,7 +139,7 @@ def user(id):
     return render_template('user.html', user=user)
 ```
 * Dodati u user.html predložak:
-```html
+```jinja
 {% extends "layout.html" %}
 {% block title %}Korisnik | {{ user.username }} - {% endblock %}
 {% block page_content %}
@@ -160,7 +160,7 @@ def page_not_found(e):
 ```
 
 * predložak _error404.html_:
-```html
+```jinja
 {% extends "layout.html" %}
 {% block title %}Nepostojeći sadržaj - {% endblock %}
 {% block page_content %}
@@ -344,7 +344,7 @@ def login():
     return render_template('login.html', form=form)
 ```
 i predložak ```login.html```
-```html
+```jinja
 {% extends "layout.html" %}
 {% from 'bootstrap/form.html' import render_form %}
 
@@ -485,7 +485,7 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Registracija')
 ```
 I dodajmo ```register.html``` predložak:
-```html
+```jinja
 {% extends "layout.html" %}
 {% from 'bootstrap/form.html' import render_form %}
 
@@ -585,7 +585,7 @@ Stranica je sad malo izmijenjena:
 ![flask-admin-home](./static/images/flask-admin-2.png)
 
 Primijetili ste da je početna stranica _admin_ sekcije prazna. Nju možete lako promijeniti, tj. dodati je na način da u _templates_ mapi stvorite mapu _admin_ te datoteku ```index.html``` sa npr. slijedećim sadržajem:
-```html
+```jinja
 {% extends 'admin/master.html' %}
 
 {% block body %}
