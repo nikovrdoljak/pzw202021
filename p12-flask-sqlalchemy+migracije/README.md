@@ -110,8 +110,6 @@ def users():
     return render_template('users.html', users=users)
 ```
 * Dodati u users.html predložak:
-
-{% raw %}
 ```html
 {% extends "layout.html" %}
 {% block title %}Korisnici - {% endblock %}
@@ -128,8 +126,6 @@ def users():
 </div>
 {% endblock %}
 ```
-{% endraw %}
-
 * Pokrenite aplikaciju i pogledajte da li su svi korisnici ispisani.
 * Promijenite liniju s ispisom korisnika u link:
 ```html
@@ -143,8 +139,6 @@ def user(id):
     return render_template('user.html', user=user)
 ```
 * Dodati u user.html predložak:
-
-{% raw %}
 ```html
 {% extends "layout.html" %}
 {% block title %}Korisnik | {{ user.username }} - {% endblock %}
@@ -154,8 +148,6 @@ def user(id):
 </div>
 {% endblock %}
 ```
-{% endraw %}
-
 * Pokrenite aplikaciju i provjerite da se na klik korisnika otvara stranica s podacima o korisniku. Probajte u pregledniku direktno promijeniti _id_ parametar u neki drugi. Što se dešava ako upišete nepostojeći _id_?
 
 ## Zadatak 4 – dodati stranicu za grešku 404
@@ -168,8 +160,6 @@ def page_not_found(e):
 ```
 
 * predložak _error404.html_:
-
-{% raw %}
 ```html
 {% extends "layout.html" %}
 {% block title %}Nepostojeći sadržaj - {% endblock %}
@@ -179,7 +169,6 @@ def page_not_found(e):
 </div>
 {% endblock %}
 ```
-{% endraw %}
 
 ## Zadatak 5 – brisanje
 * Dodati na "user.html" predložak link (botun) za brisanje:
@@ -355,8 +344,6 @@ def login():
     return render_template('login.html', form=form)
 ```
 i predložak ```login.html```
-
-{% raw %}
 ```html
 {% extends "layout.html" %}
 {% from 'bootstrap/form.html' import render_form %}
@@ -372,8 +359,6 @@ i predložak ```login.html```
     </div>
 {% endblock %}
 ```
-{% endraw %}
-
 U ```layout.html``` dodajmo link za prijavu (možemo maknuti polje za pretragu):
 ```html
     <ul class="nav navbar-nav navbar-right">
@@ -500,8 +485,6 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Registracija')
 ```
 I dodajmo ```register.html``` predložak:
-
-{% raw %}
 ```html
 {% extends "layout.html" %}
 {% from 'bootstrap/form.html' import render_form %}
@@ -517,8 +500,6 @@ I dodajmo ```register.html``` predložak:
     </div>
 {% endblock %}
 ```
-{% endraw %}
-
 U ```login.html``` dodajmo gumb za registraciju ispod forme za prijavu:
 ```html
 <div class="col-md-12" class="mt-4">
@@ -604,8 +585,6 @@ Stranica je sad malo izmijenjena:
 ![flask-admin-home](./static/images/flask-admin-2.png)
 
 Primijetili ste da je početna stranica _admin_ sekcije prazna. Nju možete lako promijeniti, tj. dodati je na način da u _templates_ mapi stvorite mapu _admin_ te datoteku ```index.html``` sa npr. slijedećim sadržajem:
-
-{% raw %}
 ```html
 {% extends 'admin/master.html' %}
 
@@ -613,7 +592,6 @@ Primijetili ste da je početna stranica _admin_ sekcije prazna. Nju možete lako
   <p>Administracija aplikacije</p>
 {% endblock %}
 ```
-{% endraw %}
 
 Također, primijetit ćete da _admin_ sekciji možemo pristupiti i ako nismo prijavljeni (logirani). To je scenarij koji želimo spriječiti, pa ćemo to riješiti na jednostavan način, pošto smo već implementirali _flask-login_ autentikaciju. Stvorit ćemo svoju ```ModelView``` klasu koju naslijeđuje postojeću, te nadjačati (_override_) njenu ```is_accessible()``` metodu:
 ```python
@@ -635,7 +613,7 @@ Ako sad pristupite _admin_ sekciji primjetit ćete da linkova na _user_ i _role_
 * grupirati stranice 
 * dodati vlastite _poglede_
 * izmijeniti postojeće predloške
-* lokalizirate na neki drugi jezik i sl.
+* lokalizirati na neki drugi jezik i sl.
 Detaljnije informacije možete pronaći u [Flask-admin dokumentaciji](https://flask-admin.readthedocs.io/en/latest/).
 
 
