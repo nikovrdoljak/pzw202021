@@ -110,7 +110,7 @@ def users():
     return render_template('users.html', users=users)
 ```
 * Dodati u users.html predložak:
-```html
+```jinja
 {% extends "layout.html" %}
 {% block title %}Korisnici - {% endblock %}
 {% block page_content %}
@@ -128,7 +128,7 @@ def users():
 ```
 * Pokrenite aplikaciju i pogledajte da li su svi korisnici ispisani.
 * Promijenite liniju s ispisom korisnika u link:
-```html
+```jinja
 <li><a href="{{ url_for('user', id=user.id )}}">{{ user.username }}</a></li>
 ```
 * Dodati user view:
@@ -139,7 +139,7 @@ def user(id):
     return render_template('user.html', user=user)
 ```
 * Dodati u user.html predložak:
-```html
+```jinja
 {% extends "layout.html" %}
 {% block title %}Korisnik | {{ user.username }} - {% endblock %}
 {% block page_content %}
@@ -160,7 +160,7 @@ def page_not_found(e):
 ```
 
 * predložak _error404.html_:
-```html
+```jinja
 {% extends "layout.html" %}
 {% block title %}Nepostojeći sadržaj - {% endblock %}
 {% block page_content %}
@@ -274,6 +274,8 @@ True
 ### Zadatak 8 - dodavanje password polja
 Promijenimo User klasu da možemo dodati polje za spremanje hash-a zaporke. Nova klasa bi trebala izgledati ovako:
 ```python
+from werkzeug.security import generate_password_hash, check_password_hash
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -342,7 +344,7 @@ def login():
     return render_template('login.html', form=form)
 ```
 i predložak ```login.html```
-```html
+```jinja
 {% extends "layout.html" %}
 {% from 'bootstrap/form.html' import render_form %}
 
@@ -436,7 +438,7 @@ Te još jednu rutu, kojoj smije pristupiti samo autenticirani korisnik:
 @app.route('/secret')
 @login_required
 def secret():
-    return "Ovu stranicu može vidjeti samo prijavljeni korisnil..."
+    return "Ovu stranicu može vidjeti samo prijavljeni korisnik..."
 ```
 
 ### Zadatak 10 - odjava
@@ -461,8 +463,10 @@ def logout():
 ```
 
 ### Zadatak 11 - registracija
-Sad ćemo dodati funkcionalnost registracije. Dodajmo rutu:
+Sad ćemo dodati funkcionalnost registracije. Dodajmo rutu i klasu forme:
 ```python
+from wtforms.validators import EqualTo
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -473,9 +477,15 @@ def register():
         flash('Sad se možete prijaviti', category='success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
+
+class RegisterForm(FlaskForm):
+    email = TextField('E-mail', validators=[DataRequired(), Length(1, 64), Email()])
+    password = PasswordField('Zaporka', validators=[DataRequired(), EqualTo('password2', message='Zaporke moraju biti jednake.')])
+    password2 = PasswordField('Potvrdi zaporku', validators=[DataRequired()])
+    submit = SubmitField('Registracija')
 ```
 I dodajmo ```register.html``` predložak:
-```html
+```jinja
 {% extends "layout.html" %}
 {% from 'bootstrap/form.html' import render_form %}
 
@@ -502,9 +512,9 @@ if user is not None and user.verify_password(form.password.data):
 ```
 Registrirajmo novog korisnika, i prijavimo se s njim. Provjerimo kako u bazi izgleda novi zapis.
 
-### Zadatak 12 - potvrda regostracije
+### Zadatak 12 - potvrda registracije
 Ovdje ćemo samo pokazati kako bi trebao izgledati proces potvrde registracije. Naime jedan od obaveznih koraka pri registraciji je potvrda iste mailom, gdje korisnik mora kliknuti aktivacijski link.
-Taj link mora imati korsničko ime kriptirano, stoga moramo napraviti otprilike slijedeće:
+Taj link mora imati korisničko ime kriptirano, stoga moramo napraviti otprilike slijedeće:
 ```python
 flask shell
 >>> from itsdangerous import TimedJSONWebSignatureSerializer as serializer
@@ -551,6 +561,7 @@ pip install flask-admin
 U ```app.py``` dodajmo:
 ```python
 from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 ```
 te nakon instaciranja aplikacije dodajmo:
 ```python
@@ -561,8 +572,49 @@ Ispod definicija db klasa dodajmo:
 admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(Role, db.session))
 ```
-Pokrenimo aplikaciju te odimo na adresu [http://localhost:5000/admin/](http://localhost:5000/admin/)
+Pokrenimo aplikaciju te odimo na adresu [http://localhost:5000/admin/](http://localhost:5000/admin/). Izgled _admin_ stranice je slijedeći:
+![flask-admin-home](./static/images/flask-admin-1.png)
+Na ovoj stranici sad možemo pregledavati podatke u tablicama _user_ i _role_, uređivati ih brisati, odnosno vršiti sve _CRUD (Create, Read, Update, Delete)_ funkcije nad podacima.
 
+Ako želimo da ova  _admin_ sekcija aplikacije bude u skladu s našim layoutom, možemo uključiti _bootsrap4_ i _bootswatch_ temu koju koristimo, izmijenimo dio koda:
+```python
+app.config['FLASK_ADMIN_SWATCH'] = 'minty'
+admin = Admin(app, template_mode='bootstrap4')
+```
+Stranica je sad malo izmijenjena:
+![flask-admin-home](./static/images/flask-admin-2.png)
+
+Primijetili ste da je početna stranica _admin_ sekcije prazna. Nju možete lako promijeniti, tj. dodati je na način da u _templates_ mapi stvorite mapu _admin_ te datoteku ```index.html``` sa npr. slijedećim sadržajem:
+```jinja
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <p>Administracija aplikacije</p>
+{% endblock %}
+```
+
+Također, primijetit ćete da _admin_ sekciji možemo pristupiti i ako nismo prijavljeni (logirani). To je scenarij koji želimo spriječiti, pa ćemo to riješiti na jednostavan način, pošto smo već implementirali _flask-login_ autentikaciju. Stvorit ćemo svoju ```ModelView``` klasu koju naslijeđuje postojeću, te nadjačati (_override_) njenu ```is_accessible()``` metodu:
+```python
+class MyModelView(ModelView):
+    def is_accessible(self):
+        return current_user.is_authenticated
+```
+Promijenimo način dodavanja _db_ klasa korištenjem nove klase:
+```python
+admin.add_view(MyModelView(User, db.session))
+admin.add_view(MyModelView(Role, db.session))
+```
+Ako sad pristupite _admin_ sekciji primjetit ćete da linkova na _user_ i _role_ stranica više nema, te da će se pojaviti tek kad se prijavite (logirate) na glavnoj stranici.
+
+```flask-admin``` ekstenzija vam zbilja olakšava razvoj web aplikacije, a omogućava i da ju dodatno prilagodite vašim zahtjevima. Npr. možete:
+* dodatno prilagoditi pristup pojedinim elementima administracije
+* promijeniti CRUD značajke pojedine stranice korištenjem metoda ```can_view_details, can_create, can_edit, can_delete```. 
+* definirati koje atribute želite prikazati ili ne.
+* grupirati stranice 
+* dodati vlastite _poglede_
+* izmijeniti postojeće predloške
+* lokalizirati na neki drugi jezik i sl.
+Detaljnije informacije možete pronaći u [Flask-admin dokumentaciji](https://flask-admin.readthedocs.io/en/latest/).
 
 
 ## Slijedeće
