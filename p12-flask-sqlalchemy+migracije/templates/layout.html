@@ -33,20 +33,20 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="{{ url_for('index')}}">Početna</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Link 1</a>
-                    </li>
+                    <li><a class="nav-link" href="{{ url_for('users')}}">Korisnici</a></li>
                     <li class="nav-item">
                         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Link 2</a>
                     </li>
 
                 </ul>
                 
-
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Upišite..." aria-label="Search">
-                    <button class="btn btn-default my-2 my-sm-0" type="submit">Pretraži</button>
-                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if current_user.is_authenticated %}
+                    <li><a href="{{url_for('logout')}}">Odjava</a></li>
+                    {% else %}
+                    <li><a href="{{url_for('login')}}">Prijava</a></li>
+                    {% endif %}
+                </ul>
 
                 </div>
         </nav>

@@ -543,5 +543,27 @@ def confirm(token):
 * Resetiranje passworda
 * Promjena email adrese
 
+## Flask-admin
+[Flask-admin](https://flask-admin.readthedocs.io/en/latest/) ekstenzija pomaže nam da na jednostavan način dodamo u svoju Flask aplikaciju podršku za administriranje aplikacije te pregledavanje podataka u njoj kojima se pristupa preko postojećih _db_ klasa. Pogledajmo kako implementirati ```flask-admin``` ekstenziju. Najprije ju instalirajmo:
+```
+pip install flask-admin
+```
+U ```app.py``` dodajmo:
+```python
+from flask_admin import Admin
+```
+te nakon instaciranja aplikacije dodajmo:
+```python
+admin = Admin(app)
+```
+Ispod definicija db klasa dodajmo:
+```python
+admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Role, db.session))
+```
+Pokrenimo aplikaciju te odimo na adresu [http://localhost:5000/admin/](http://localhost:5000/admin/)
+
+
+
 ## Slijedeće
 Autorizacija i korištenje ```flask-principal``` ekstenzije.
